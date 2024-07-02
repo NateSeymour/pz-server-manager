@@ -1,0 +1,9 @@
+[package]
+name = "pz-server-manager"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rust-apt = "0.7.0"
+ratatui = "0.27.1-alpha.0"
+clap = { version = "4.5.8", features = ["derive"] }
