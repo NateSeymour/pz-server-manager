@@ -5,14 +5,13 @@ use std::process::{Command, Stdio};
 use std::io::Write;
 use std::fs;
 use std::env;
+use std::fmt::format;
 
 fn init() {
     // Initialize all directories
     let home = env::var("HOME").unwrap();
 
     fs::create_dir_all(format!("{}/.pz-manager/bin", home)).unwrap();
-    fs::create_dir_all(format!("{}/.pz-manager/servers", home)).unwrap();
-    fs::create_dir_all(format!("{}/.pz-manager/logs", home)).unwrap();
 }
 
 fn install_steamcmd() {
@@ -44,6 +43,16 @@ fn install_pz() {
     stdin.write_all(b"quit\n").unwrap();
 
     steamcmd.wait();
+}
+
+fn launch_pz(name: String) {
+    let home = env::var("HOME").unwrap();
+    let mut pz = Command::new(format!("{home}/.pz-manager/bin/start-server.sh"))
+        .args(&[format!("-servername {name}").as_str(), "-adminpassword password", format!("-cachedir={home}/.pz-manager").as_str()])
+        .spawn()
+        .unwrap();
+
+    pz.wait();
 }
 
 #[derive(clap::Parser)]
@@ -81,7 +90,7 @@ fn main() {
             }
         },
         Some(Commands::Start { name }) => {
-
+            launch_pz(name);
         },
         None => {}
     }
